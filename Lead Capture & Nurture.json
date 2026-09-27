@@ -1,0 +1,513 @@
+{
+  "name": "Lead Capture & Nurture",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Contact Us",
+        "formDescription": "We'll get back to you soon",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name"
+            },
+            {
+              "fieldLabel": "Type Email",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "Message",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -272,
+        -32
+      ],
+      "id": "1febfa19-5a1c-4012-84bd-8c96157cb2bf",
+      "name": "On form submission",
+      "webhookId": "e0f620d0-ebb2-4dfe-a5af-d9d1661c1ecf"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "days"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        -64
+      ],
+      "id": "f6fdc47f-fe8f-4a21-b922-6ac7555676f8",
+      "name": "Wait",
+      "webhookId": "526a77c0-c0ec-49a7-b947-ccf804803cf4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2a275389-bbc5-4a3c-a972-4e064af56fe5",
+              "leftValue": "={{ $json.output.is_spam }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        240,
+        -96
+      ],
+      "id": "a5ea356e-6a5a-4dc5-b330-d99797d81987",
+      "name": "Has message?"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Vo4y5fX_QhLdW3P17r76wS940XGIsw5PhSBlwhR2dgc",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vo4y5fX_QhLdW3P17r76wS940XGIsw5PhSBlwhR2dgc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vo4y5fX_QhLdW3P17r76wS940XGIsw5PhSBlwhR2dgc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('On form submission').item.json.Name }}",
+            "email": "={{ $('On form submission').item.json[\"Type Email\"] }}",
+            "message": "={{ $('On form submission').item.json.Message }}",
+            "lead_score": "={{ $('AI Agent').item.json.output.lead_score }}",
+            "intent": "={{ $('AI Agent').item.json.output.intent }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lead_score",
+              "displayName": "lead_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        -160
+      ],
+      "id": "542731bd-c5a2-4993-90f8-610524c4d75a",
+      "name": "Save lead",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GAkDCumSH6fiSI8j",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Vo4y5fX_QhLdW3P17r76wS940XGIsw5PhSBlwhR2dgc",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vo4y5fX_QhLdW3P17r76wS940XGIsw5PhSBlwhR2dgc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1053421030,
+          "mode": "list",
+          "cachedResultName": "spam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Vo4y5fX_QhLdW3P17r76wS940XGIsw5PhSBlwhR2dgc/edit#gid=1053421030"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('On form submission').item.json.Name }}",
+            "email": "={{ $('On form submission').item.json[\"Type Email\"] }}",
+            "message": "={{ $('On form submission').item.json.Message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        96
+      ],
+      "id": "b0c00fb3-9024-4fdf-8d00-69ee16f74f01",
+      "name": "Log spam",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GAkDCumSH6fiSI8j",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "keyhouseatbusiness@gmail.com",
+        "subject": "=New lead:  {{ $json.Name }}",
+        "emailType": "text",
+        "message": "=New lead came in!\n\nName: {{ $json.Name }}\nEmail: {{ $json.email }}\nMessage: {{ $json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        -160
+      ],
+      "id": "a8760aab-c791-4d65-a4a8-f14556635353",
+      "name": "Notify me",
+      "webhookId": "f64eaa55-a8f4-4122-95ca-f79d96668f4c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uOwcsDxdBHqUbqo4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Type Email'] }}",
+        "subject": "Thanks for reaching out!",
+        "emailType": "text",
+        "message": "={{ $('AI Agent').item.json.output.reply_draft }}\n\nBest,\nJayson\nKeyHouse",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        944,
+        -160
+      ],
+      "id": "9097d2a2-c3d3-4088-8d08-b82d28a3e228",
+      "name": "Auto-reply",
+      "webhookId": "7f5d29d4-4c45-4eea-b2e8-04fb42ef425d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uOwcsDxdBHqUbqo4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Type Email'] }}",
+        "subject": "Just checking in!",
+        "emailType": "text",
+        "message": "=Hi {{ $('On form submission').item.json.Name }},\n\nJust following up on your message. Do you have any questions we can help with?\n\nTalk soon!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1152,
+        128
+      ],
+      "id": "bd438a0c-e843-4d5b-97b5-70e50bc0bdf8",
+      "name": "Follow-up",
+      "webhookId": "9516e10a-52d7-486c-a96e-d1c2a295777c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uOwcsDxdBHqUbqo4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You qualify inbound leads from a website contact form.\n\nName: {{ $json.Name }}\nEmail: {{ $json[\"Type Email\"] }}\nMessage: {{ $json.Message }}\n\n1. is_spam: true if it's spam, SEO/link pitches, gibberish, or empty.\n2. lead_score: \"hot\" (ready to buy/hire, mentions timeline or budget), \"warm\", or \"cold\".\n3. intent: one sentence on what they want.\n4. reply_draft: a short, friendly reply (3-4 sentences) that references their\n   specific request and suggests a next step. No placeholders, no sign-off name.",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -96,
+        -48
+      ],
+      "id": "a27d031a-9e83-47f0-8e54-c7aee4037ff2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"is_spam\": false,\n  \"lead_score\": \"hot\",\n  \"intent\": \"short summary of what they want\",\n  \"reply_draft\": \"personalized reply email body\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        176
+      ],
+      "id": "6c56e944-3e4f-450c-9872-c28a48b36212",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        192
+      ],
+      "id": "e10e390f-25a0-42e0-9359-54611c4a48ce",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has message?": {
+      "main": [
+        [
+          {
+            "node": "Save lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log spam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save lead": {
+      "main": [
+        [
+          {
+            "node": "Notify me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify me": {
+      "main": [
+        [
+          {
+            "node": "Auto-reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-reply": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Has message?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow-up": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ef9cdbbc-37d5-4a1d-bf02-b501995f253a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "97a3cc6122d629141451ac269c314dfe5c442d5138ff6379c4e945aab938493a"
+  },
+  "nodeGroups": [],
+  "id": "O67Sfi7a9cmM1EtN",
+  "tags": []
+}
